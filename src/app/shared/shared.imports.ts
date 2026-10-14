@@ -1,3 +1,13 @@
+// Modulos para Formularios y directivas de Angular que se importan en los componentes standalone de la aplicación.
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgOptimizedImage } from '@angular/common';
+
+/* =========================
+   Router
+   ========================= */
+import { RouterModule } from '@angular/router';
+
 // Elementos de Angular Material que se importan en los componentes standalone de la aplicación.
 
 import { MatButtonModule } from '@angular/material/button';
@@ -19,4 +29,11 @@ export const SHARED_IMPORTS = [
   MatButtonModule,
   MatDividerModule,
   MatIconModule,
+  /*Angular*/
+  CommonModule,
+  FormsModule,
+  ReactiveFormsModule,
+  NgOptimizedImage,
+  /* Router */
+  RouterModule
 ];
