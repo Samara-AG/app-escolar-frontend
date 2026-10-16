@@ -4,7 +4,7 @@
     <div class="login-form-section">
       <div class="login-brand">
         <img src="/assets/images/escudoB.png" alt="Logo BUAP" class="logo-buap">
-        <span class="brand-title">Sistema Escoolar</span>
+        <span class="brand-title">Sistema Escolar</span>
       </div>
       <h2 class="login-title">Iniciar Sesión</h2>
       <p class="login-subtitle">Ingresa los datos que registraste</p>
@@ -13,7 +13,7 @@
         <!-- Campo de Correo Electrónico -->
         <div class="form-group">
           <label for="email">Correo Electrónico</label>
-          <input type="email" id="email" name="username" [(ngModel)]="username" required id="email"
+          <input type="email" id="email" name="username" [(ngModel)]="username" required
             placeholder="nombre@correo.com" class="form-control" autocomplete="username" />
           @if (errors.username) {
           <div class="invalid-feedback">{{ errors.username }}</div>
@@ -28,7 +28,7 @@
               (keyup.enter)="login()" style=" padding-right: 40px;" />
             <span class="show-password" (click)="showPassword()" style=" position:absolute; right:18px; top:50%;
               transform:translateY(-50%);">
-              <i [ngClass]="typeInput == 'password' ? bi bi-eye-fill : bi bi-eye-slash"></i>
+              <i [ngClass]="typeInput == 'password' ? 'bi bi-eye-fill' : 'bi bi-eye-slash'"></i>
             </span>
           </div>
           @if (errors.password) {
