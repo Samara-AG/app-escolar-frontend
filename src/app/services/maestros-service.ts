@@ -4,6 +4,8 @@ import { AuthService } from './auth-service';
 import { ErrorsService } from './tools/errors-service';
 import { ValidatorService } from './tools/validator-service';
 import { DatosMaestro } from '../interfaces/usuarios.interfaces';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -42,7 +44,8 @@ export class MaestrosService {
     };
   }
 
-  public validarMaestro(data: DatosMaestro, editar: boolean){
+  public validarMaestro(data: DatosMaestro, editar: boolean) {
+
 
     // Lógica de validación para los datos del maestro
     const error: any = {};
@@ -51,89 +54,94 @@ export class MaestrosService {
     const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/;
 
     //Validaciones
-    if(!this.validatorService.required(data["id_trabajador"])){
+    if (!this.validatorService.required(data["id_trabajador"])) {
       error["id_trabajador"] = this.errorService.required;
-    }else if(!this.validatorService.numeric(data["id_trabajador"])){
+    } else if (!this.validatorService.numeric(data["id_trabajador"])) {
       error["id_trabajador"] = "El formato es solo números";
-    }else if(!this.validatorService.max(data["id_trabajador"], 10)){
+    } else if (!this.validatorService.max(data["id_trabajador"], 10)) {
       error["id_trabajador"] = this.errorService.max(10);
     }
 
-    if(!this.validatorService.required(data["first_name"])){
+    if (!this.validatorService.required(data["first_name"])) {
       error["first_name"] = this.errorService.required;
-    }else if(!soloLetras.test(data["first_name"])){
+    } else if (!soloLetras.test(data["first_name"])) {
       error["first_name"] = "Solo se permiten letras";
     }
 
-    if(!this.validatorService.required(data["last_name"])){
+    if (!this.validatorService.required(data["last_name"])) {
       error["last_name"] = this.errorService.required;
-    }else if(!soloLetras.test(data["last_name"])){
+    } else if (!soloLetras.test(data["last_name"])) {
       error["last_name"] = "Solo se permiten letras";
     }
 
-    if(!this.validatorService.required(data["email"])){
+    if (!this.validatorService.required(data["email"])) {
       error["email"] = this.errorService.required;
-    }else if(!this.validatorService.max(data["email"], 40)){
+    } else if (!this.validatorService.max(data["email"], 40)) {
       error["email"] = this.errorService.max(40);
-    }else if (!this.validatorService.email(data['email'])) {
+    } else if (!this.validatorService.email(data['email'])) {
       error['email'] = this.errorService.email;
     }
 
-    if(!editar){
-      if(!this.validatorService.required(data["password"])){
+    if (!editar) {
+      if (!this.validatorService.required(data["password"])) {
         error["password"] = this.errorService.required;
-      }else if(!this.validatorService.min(data["password"], 8)){
+      } else if (!this.validatorService.min(data["password"], 8)) {
         error["password"] = this.errorService.min(8);
       }
 
-      if(!this.validatorService.required(data["confirmar_password"])){
+      if (!this.validatorService.required(data["confirmar_password"])) {
         error["confirmar_password"] = this.errorService.required;
-      }else if(data["password"] !== data["confirmar_password"]){
+      } else if (data["password"] !== data["confirmar_password"]) {
         error["confirmar_password"] = "Las contraseñas no coinciden";
       }
     }
 
-    if(!this.validatorService.required(data["fecha_nacimiento"])){
+    if (!this.validatorService.required(data["fecha_nacimiento"])) {
       error["fecha_nacimiento"] = this.errorService.required;
-    }else if(new Date(data["fecha_nacimiento"]) > new Date()){
+    } else if (new Date(data["fecha_nacimiento"]) > new Date()) {
       error["fecha_nacimiento"] = "La fecha no puede ser futura";
     }
 
     // Se quitan los caracteres de la máscara para contar solo los dígitos
     const tel = String(data["telefono"] ?? "").replace(/\D/g, "");
-    if(!this.validatorService.required(data["telefono"])){
+    if (!this.validatorService.required(data["telefono"])) {
       error["telefono"] = this.errorService.required;
-    }else if(tel.length !== 10){
+    } else if (tel.length !== 10) {
       error["telefono"] = "El teléfono debe tener 10 dígitos";
     }
 
     // El CSS solo cambia lo visual, por eso se pasa a mayúsculas antes de validar
     const rfc = String(data["rfc"] ?? "").toUpperCase();
-    if(!this.validatorService.required(data["rfc"])){
+    if (!this.validatorService.required(data["rfc"])) {
       error["rfc"] = this.errorService.required;
-    }else if(!this.validatorService.min(rfc, 12)){
+    } else if (!this.validatorService.min(rfc, 12)) {
       error["rfc"] = this.errorService.min(12);
-    }else if(!this.validatorService.max(rfc, 13)){
+    } else if (!this.validatorService.max(rfc, 13)) {
       error["rfc"] = this.errorService.max(13);
-    }else if(!/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/.test(rfc)){
+    } else if (!/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/.test(rfc)) {
       error["rfc"] = "El formato del RFC no es válido";
     }
 
-    if(!this.validatorService.required(data["cubiculo"])){
+    if (!this.validatorService.required(data["cubiculo"])) {
       error["cubiculo"] = this.errorService.required;
-    }else if(!this.validatorService.max(data["cubiculo"], 20)){
+    } else if (!this.validatorService.max(data["cubiculo"], 20)) {
       error["cubiculo"] = this.errorService.max(20);
     }
 
-    if(!this.validatorService.required(data["area_investigacion"])){
+    if (!this.validatorService.required(data["area_investigacion"])) {
       error["area_investigacion"] = this.errorService.required;
     }
 
-    if(!data["materias_json"] || data["materias_json"].length === 0){
+    if (!data["materias_json"] || data["materias_json"].length === 0) {
       error["materias_json"] = "Selecciona al menos una materia";
     }
 
     //Return JSON con los errores encontrados, si no hay errores el JSON estará vacío
     return error;
   }
+  // Método para registrar un nuevo maestro en la base de datos
+  public registrarMaestro(data: DatosMaestro): Observable<any> {
+    return this.http.post<any>(`${environment.url_api}/maestros/`, data, { headers: this.getAuthHeaders() });
+  }
+
 }

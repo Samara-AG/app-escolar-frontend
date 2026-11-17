@@ -23,7 +23,7 @@ export class RegistroAdmin implements OnInit {
   //Inyectar el servicio de administradores para poder registrar y actualizar los datos del administrador
   private administradoresService = inject(AdministradoresService);
   //Inyectar el servicio de notificaciones para mostrar mensajes al usuario
-private notificationService = inject(NotificationService);
+  private notificationService = inject(NotificationService);
 
 
   //Declarar las variables para el formulario de registro
@@ -43,6 +43,7 @@ private notificationService = inject(NotificationService);
   ngOnInit(): void {
     //Si el rol es administrador, se inicializa el objeto admin con los datos del usuario
     this.admin = this.administradoresService.esquemaAdmin();
+    this.admin.rol = 'administrador';
     console.log('Datos del administrador:', this.admin);
   }
 
@@ -70,7 +71,7 @@ private notificationService = inject(NotificationService);
     }
   }
 
-  public registrar(){
+  public registrar() {
     // Lógica para validar si el usuario administrador trae datos o no en los campos del formulario
     this.errors = {};
     this.errors = this.administradoresService.validarAdmin(this.admin, this.editar);
@@ -83,29 +84,29 @@ private notificationService = inject(NotificationService);
     }
 
     //Validar que las contraseñas coincidan
-if (this.admin.password !== this.admin.confirmar_password) {
-  this.errors['confirmar_password'] = 'Las contraseñas no coinciden';
-  this.notificationService.error('Las contraseñas no coinciden');
-  this.admin.password = '';
-  this.admin.confirmar_password = '';
-  return;
-}
+    if (this.admin.password !== this.admin.confirmar_password) {
+      this.errors['confirmar_password'] = 'Las contraseñas no coinciden';
+      this.notificationService.error('Las contraseñas no coinciden');
+      this.admin.password = '';
+      this.admin.confirmar_password = '';
+      return;
+    }
 
-//Lógica para registrar o actualizar los datos del administrador
-this.administradoresService.registrarAdmin(this.admin).subscribe(
-  (response) => {
-    //Dentro del response se puede obtener el mensaje de éxito o error del backend, así como los datos del administrador registrado
-    console.log('Respuesta del backend:', response);
-    this.notificationService.success('Administrador registrado correctamente');
-    this.regresar();
-  }, (error) => {
-    console.error('Error al registrar el administrador:', error);
-    this.notificationService.error('Error al registrar el administrador');
-  }
-);
+    //Lógica para registrar o actualizar los datos del administrador
+    this.administradoresService.registrarAdmin(this.admin).subscribe(
+      (response) => {
+        //Dentro del response se puede obtener el mensaje de éxito o error del backend, así como los datos del administrador registrado
+        console.log('Respuesta del backend:', response);
+        this.notificationService.success('Administrador registrado correctamente');
+        this.regresar();
+      }, (error) => {
+        console.error('Error al registrar el administrador:', error);
+        this.notificationService.error('Error al registrar el administrador');
+      }
+    );
   }
 
-  public actualizar(){
+  public actualizar() {
 
   }
 

@@ -1,15 +1,15 @@
-import { Component, Input, OnInit, inject} from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { SHARED_IMPORTS } from '../../shared/shared.imports';
 import { Location } from '@angular/common';
 import { MaestrosService } from '../../services/maestros-service';
 //Importar la interfaz de datos del maestro
 import { DatosMaestro } from '../../interfaces/usuarios.interfaces';
-
+import { NotificationService } from '../../services/tools/notification-service';
 
 @Component({
   selector: 'app-registro-maestros',
   imports: [
-    ... SHARED_IMPORTS
+    ...SHARED_IMPORTS
   ],
   templateUrl: './registro-maestros.html',
   styleUrl: './registro-maestros.scss',
@@ -23,6 +23,8 @@ export class RegistroMaestros implements OnInit {
   private location = inject(Location);
   //Inyectar el servicio de maestros para poder registrar y actualizar los datos del maestro
   private maestrosService = inject(MaestrosService);
+  //Inyectar el servicio de notificaciones para mostrar mensajes al usuario
+  private notificationService = inject(NotificationService);
 
 
   //Declarar las variables para el formulario de registro
@@ -66,6 +68,7 @@ export class RegistroMaestros implements OnInit {
   ngOnInit(): void {
     //Se inicializa el objeto maestro con el esquema del maestro
     this.maestro = this.maestrosService.esquemaMaestro();
+    this.maestro.rol = 'maestro';
     console.log('Datos del maestro:', this.maestro);
   }
 
@@ -108,7 +111,7 @@ export class RegistroMaestros implements OnInit {
     return this.maestro.materias_json.includes(materia);
   }
 
-  public registrar(){
+  public registrar() {
     // Lógica para validar si el usuario maestro trae datos o no en los campos del formulario
     this.errors = {};
     this.errors = this.maestrosService.validarMaestro(this.maestro, this.editar);
@@ -121,11 +124,20 @@ export class RegistroMaestros implements OnInit {
     }
 
     //Lógica para registrar o actualizar los datos del maestro
-    // TODO: Aquí se debe implementar la lógica para registrar o actualizar los datos del maestro en el backend, utilizando el servicio de maestros.
-
+    this.maestrosService.registrarMaestro(this.maestro).subscribe(
+      (response) => {
+        //Dentro del response se puede obtener el mensaje de éxito o error del backend, así como los datos del maestro registrado
+        console.log('Respuesta del backend:', response);
+        this.notificationService.success('Maestro registrado correctamente');
+        this.regresar();
+      }, (error) => {
+        console.error('Error al registrar el maestro:', error);
+        this.notificationService.error('Error al registrar el maestro');
+      }
+    );
   }
 
-  public actualizar(){
+  public actualizar() {
 
   }
 
